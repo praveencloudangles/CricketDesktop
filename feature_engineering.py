@@ -11,6 +11,8 @@ def feature_engineering():
     for col in columns_to_encode:
         df_copy[col] = label_encoder.fit_transform(df_copy[col])
     final_df=df_copy
+
+    final_df.to_csv("cricket_prediction.csv", index=False)
     return final_df
 
 feature_engineering()
