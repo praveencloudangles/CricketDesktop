@@ -1,29 +1,34 @@
 pipeline{
     agent any
+
     stages{
-        stage("Loading the data"){
+        stage("Extract Data"){
             steps{
                 sh 'python3 data_loading.py'
             }
         }
-        stage("Analysing the data"){
+        stage("Data Analysis"){
             steps{
                 sh 'python3 data_analysis.py'
-            }}
-        stage("cleansing the data"){
+            }
+        }
+        stage("Data Preprocessing"){
             steps{
                 sh 'python3 data_cleaning.py'
-            }}
-        stage("Data visualization"){
+            }
+        }
+        stage("Data Visualization"){
             steps{
                 sh 'python3 datavisualization.py'
-            }}
+            }
+        }
         stage("Feature Engineering"){
             steps{
                 sh 'python3 feature_engineering.py'
-            }}
+            }
+        }
     }
-     post{
+    post{
        
         always {
             archiveArtifacts artifacts: 'cricket_prediction.csv', onlyIfSuccessful: true
