@@ -31,7 +31,7 @@ pipeline{
     post{
        
         always {
-            archiveArtifacts artifacts: 'cricket_prediction.csv', onlyIfSuccessful: true
+            archiveArtifacts artifacts: 'cricket_dataset.csv', onlyIfSuccessful: true
         }
             }
 }
