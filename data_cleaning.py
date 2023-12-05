@@ -47,10 +47,10 @@ def data_cleaning():
 
     drop_col = ['id', 'result', 'season', 'date', 'venue', 'umpire1', 'umpire2', 'umpire3']
     data.drop(columns=drop_col, inplace=True)
-    df = data.drop_duplicates()
+    # df = data.drop_duplicates()
     # print(df.duplicated().sum())
     # df.to_csv('final_csv.csv', index=False)
 
-    return df
+    return data
 
 data_cleaning()

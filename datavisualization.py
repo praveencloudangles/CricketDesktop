@@ -1,12 +1,24 @@
 print("data visualization.....")
-from matplotlib import pyplot as plt
-import seaborn as sns
-import numpy as np
-# from data_cleaning import data_cleaning
+from data_cleaning import data_cleaning
 from feature_engineering import feature_engineering
+import pandas as pd
+import plotly.express as px
+from IPython.display import Image
+import warnings
+warnings.filterwarnings("ignore")
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.figure_factory as ff
+import plotly.io as pio
+import io
+from PIL import Image
+
+a =[]
 
 def data_visualization():
-    data=feature_engineering()
+    dataset=feature_engineering()
+    data = data_cleaning()
     categ = []
     numer = []
 
@@ -28,24 +40,45 @@ def data_visualization():
         data.loc[data[x] < min,x] = np.nan
         data.loc[data[x] > max,x] = np.nan
 
-    selected_columns = data[["team1", "team2", "toss_winner", 'winner' ,'win_by_runs', 'win_by_wickets']]
+    col=list(dataset.columns)
+    col.remove("winner")
+    print(col)
+    for i in col:
+        fig = px.box(dataset, y=i)
+        fig.update_layout(template='plotly_dark')
+        #fig.update_layout(plot_bgcolor = "plotly_dark")
+        fig.update_xaxes(showgrid=False,zeroline=False)
+        fig.update_yaxes(showgrid=False,zeroline=False)
+        # fig.show()
+        fig.write_image(f"{i}.jpg")
+        # a.append(fig)
 
-    for num in selected_columns:
-        plt.figure(figsize=(5,5))
-        sns.boxplot(data=selected_columns, x=num)
-        plt.xlabel(num)
-    plt.show()
-
-    for num in selected_columns:
-        plt.figure(figsize=(5, 5))
-        sns.violinplot(data=selected_columns, x=num)
-        plt.xlabel(num)
-    plt.show()
-
-    corr_matrix = data[['city', 'team1', 'team2', 'toss_winner', 'toss_decision', 'winner', 'win_by_runs', 'win_by_wickets', 'player_of_match']]
-    plt.figure(figsize=(10,8))
-    sns.heatmap(corr_matrix.corr(), annot=True, cmap="coolwarm", fmt=".2f", vmin=-1, vmax=1)
-    plt.show()
+    for i in col:
+        fig = px.histogram(dataset, y=i, marginal="box")
+        fig.update_layout(template='plotly_dark')
+        fig.update_xaxes(showgrid=False, zeroline=False)
+        fig.update_yaxes(showgrid=False, zeroline=False)
+        # fig.show()
+        fig.write_image(f"{i}_hist.jpg")
+        # a.append(fig)
+        
+    # for i in col:
+    #     fig = ff.create_distplot(dataset, y=i, marginal="box")
+    #     fig.update_layout(template='plotly_dark')
+    #     fig.update_xaxes(showgrid=False, zeroline=False)
+    #     fig.update_yaxes(showgrid=False, zeroline=False)
+    #     # fig.show()
+    #     fig.write_image(f"{i}_displot.jpg")
+    #     # a.append(fig)
+    
+    df=dataset.drop("winner",axis=1)
+    y=df.corr().columns.tolist()
+    z=df.corr().values.tolist()
+    z_text = np.around(z, decimals=4) # Only show rounded value (full value on hover)
+    fig = ff.create_annotated_heatmap(z,x=y,y=y,annotation_text=z_text,colorscale=px.colors.sequential.Cividis_r,showscale=True)
+    fig.update_layout(template='plotly_dark')
+    # fig.show()
+    fig.write_image("img.jpg")
 
     return data
 
